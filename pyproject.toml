@@ -1,0 +1,166 @@
+[project]
+name = "xythrion-api"
+version = "0.1.0"
+description = "API portion of Xythrion"
+authors = [{ name = "Xithrius", email = "xithrius@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+    "fastapi>=0.112.0",
+    "uvicorn[standard]>=0.30.5",
+    "gunicorn>=22.0.0",
+    "sqlalchemy[asyncio]>=2.0.32",
+    "asyncpg>=0.29.0",
+    "alembic>=1.13.2",
+    "pydantic>=2.8.2",
+    "pydantic-settings>=2.4.0",
+    "httpx>=0.27.0",
+    "httptools>=0.6.1",
+    "yarl>=1.9.4",
+    "ujson>=5.10.0",
+    "python-dotenv>=1.0.1",
+    "loguru>=0.7.2",
+    "prometheus-client>=0.20.0",
+    "prometheus-fastapi-instrumentator>=7.0.0",
+    "opentelemetry-api>=1.26.0",
+    "opentelemetry-sdk>=1.26.0",
+    "opentelemetry-exporter-otlp>=1.26.0",
+    "opentelemetry-instrumentation>=0.47b0",
+    "opentelemetry-instrumentation-fastapi>=0.47b0",
+    "opentelemetry-distro>=0.47b0",
+    "opentelemetry-instrumentation-logging>=0.47b0",
+]
+
+[tool.rye]
+managed = true
+virtual = true
+dev-dependencies = [
+    "pre-commit>=3.8.0",
+    "ruff>=0.6.7",
+    "basedpyright>=1.17.5",
+    "pytest>=8.3.2",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "pytest-xdist>=3.6.1",
+    "psycopg>=3.2.1",
+    "testcontainers[postgres]>=4.8.1",
+    "gevent>=24.2.1",
+]
+
+[tool.rye.scripts]
+start = "python3 -m api"
+
+precommit = "pre-commit install"
+
+# Database migrating
+history = "alembic history"
+migrate = "alembic revision --autogenerate -m"
+upgrade = "alembic upgrade head"
+downgrade = "alembic downgrade"
+
+# Testing
+test = "pytest --ff"
+atest = "pytest -n auto --ff"
+vtest = "pytest -vvv --ff"
+retest = "pytest --lf"
+
+# Coverage
+test-cov = "pytest --cov=./ --cov-report=xml"
+html = "coverage html"
+report = "coverage report --sort=Cover"
+
+"format:ruff" = "ruff format"
+"check:ruff" = "ruff check ."
+"check:ruff:ci" = "ruff check --output-format=github ."
+"fix:ruff" = "ruff check --fix ."
+
+typecheck = "basedpyright"
+
+format = { chain = ["format:ruff", "fix:ruff"] }
+lint = { chain = ["check:ruff", "typecheck"] }
+ci = { chain = ["check:ruff:ci", "typecheck"] }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--tb=short"
+xfail_strict = true
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+# https://docs.basedpyright.com/#/configuration
+[tool.pyright]
+exclude = ["migrations", ".venv", ".cache", ".ruff_cache", ".pytest_cache"]
+pythonVersion = "3.12"
+
+typeCheckingMode = "strict"
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
+
+[tool.ruff]
+target-version = "py312"
+extend-exclude = [".cache"]
+output-format = "concise"
+line-length = 120
+unsafe-fixes = true
+preview = true
+
+[tool.ruff.lint]
+select = [
+    "ANN",
+    "B",
+    "C4",
+    "D",
+    "DTZ",
+    "E",
+    "F",
+    "I",
+    "INT",
+    "N",
+    "PGH",
+    "PIE",
+    "Q",
+    "RET",
+    "RSE",
+    "RUF",
+    "S",
+    "SIM",
+    "T20",
+    "TID",
+    "UP",
+    "W",
+]
+ignore = [
+    "ANN401",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D107",
+    "D203",
+    "D212",
+    "D214",
+    "D215",
+    "D301",
+    "D400",
+    "D401",
+    "D402",
+    "D404",
+    "D405",
+    "D406",
+    "D407",
+    "D408",
+    "D409",
+    "D410",
+    "D411",
+    "D412",
+    "D413",
+    "D414",
+    "D416",
+    "D417",
+    "RET504",
+    "S101",
+]
