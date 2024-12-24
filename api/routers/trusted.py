@@ -60,7 +60,7 @@ async def create_trusted_user(
             detail="User is already trusted",
         )
 
-    return await trusted_dao.create(session, obj_in=new_user)
+    return await trusted_dao.create(session, obj=new_user)
 
 
 @router.delete(

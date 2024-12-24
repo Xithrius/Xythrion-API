@@ -39,8 +39,8 @@ class LinkMapChannelCRUD(CRUDBase[LinkMapChannelModel, LinkMapChannelCreate, Lin
 
         return None
 
-    async def create(self, db: AsyncSession, *, obj_in: LinkMapChannelCreate) -> LinkMapChannelModel:
-        return await self.create_(db, obj_in=obj_in)
+    async def create(self, db: AsyncSession, *, obj: LinkMapChannelCreate) -> LinkMapChannelModel:
+        return await self.create_(db, obj=obj)
 
     async def add_converter(self, db: AsyncSession, *, channel_id: str, converter_id: str) -> str | None:
         # Assuming that the channel and converter were already checked to exist beforehand
@@ -104,7 +104,7 @@ class LinkMapChannelCRUD(CRUDBase[LinkMapChannelModel, LinkMapChannelCreate, Lin
             if converter is None:
                 return 0
 
-        return await self.delete_(db, pk=pk)
+        return await self.delete_by_id(db, pk=pk)
 
 
 link_map_channel_dao = LinkMapChannelCRUD(LinkMapChannelModel)

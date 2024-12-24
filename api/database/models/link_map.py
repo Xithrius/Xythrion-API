@@ -33,11 +33,15 @@ class LinkMapChannelModel(Base):
         primary_key=True,
         default=uuid.uuid4,
     )
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=now(),
+    )
 
-    server_id = mapped_column(BigInteger)
-    input_channel_id = mapped_column(BigInteger)
-    output_channel_id = mapped_column(BigInteger)
+    server_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    input_channel_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    output_channel_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
 
     converters: Mapped[list[LinkMapConverterModel]] = relationship(
         secondary="channel_converter_association",
@@ -61,9 +65,13 @@ class LinkMapConverterModel(Base):
         primary_key=True,
         default=uuid.uuid4,
     )
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=False,
+        default=now(),
+    )
 
-    from_link: Mapped[str] = mapped_column(String)
+    from_link: Mapped[str] = mapped_column(String, nullable=False)
     to_link: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
     xpath: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
 

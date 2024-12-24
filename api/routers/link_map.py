@@ -37,7 +37,7 @@ async def get_all_link_map_converters(session: DBSession) -> list[LinkMapConvert
     status_code=status.HTTP_200_OK,
 )
 async def get_one_link_map_channel(session: DBSession, channel_id: str) -> LinkMapChannelModel:
-    channel = await link_map_channel_dao.get_(session, pk=channel_id)
+    channel = await link_map_channel_dao.select_by_id(session, pk=channel_id)
 
     if channel is None:
         raise HTTPException(
@@ -54,7 +54,7 @@ async def get_one_link_map_channel(session: DBSession, channel_id: str) -> LinkM
     status_code=status.HTTP_200_OK,
 )
 async def get_one_link_map_converter(session: DBSession, converter_id: str) -> LinkMapConverterModel:
-    converter = await link_map_converter_dao.get_(session, pk=converter_id)
+    converter = await link_map_converter_dao.select_by_id(session, pk=converter_id)
 
     if converter is None:
         raise HTTPException(
@@ -127,7 +127,7 @@ async def create_link_map_channel(
             detail=f"Link map channel already exists in server with ID '{link_map_channel.server_id}'",
         )
 
-    return await link_map_channel_dao.create(session, obj_in=link_map_channel)
+    return await link_map_channel_dao.create(session, obj=link_map_channel)
 
 
 @router.post(
@@ -153,7 +153,7 @@ async def create_link_map_converter(
             detail="Link map converter already exists",
         )
 
-    return await link_map_converter_dao.create(session, obj_in=link_map_converter)
+    return await link_map_converter_dao.create(session, obj=link_map_converter)
 
 
 @router.put(
@@ -166,7 +166,7 @@ async def enable_link_map_converter_for_channel(
     converter_id: str,
 ) -> Response:
     # Make sure the converter exists
-    channel = await link_map_channel_dao.get_(session, pk=channel_id)
+    channel = await link_map_channel_dao.select_by_id(session, pk=channel_id)
 
     if channel is None:
         raise HTTPException(
@@ -175,7 +175,7 @@ async def enable_link_map_converter_for_channel(
         )
 
     # Make sure the channel exists
-    converter = await link_map_converter_dao.get_(session, pk=converter_id)
+    converter = await link_map_converter_dao.select_by_id(session, pk=converter_id)
 
     if converter is None:
         raise HTTPException(
@@ -209,7 +209,7 @@ async def disable_link_map_converter_for_channel(
     converter_id: str,
 ) -> Response:
     # Make sure the converter exists
-    channel = await link_map_channel_dao.get_(session, pk=channel_id)
+    channel = await link_map_channel_dao.select_by_id(session, pk=channel_id)
 
     if channel is None:
         raise HTTPException(
@@ -218,7 +218,7 @@ async def disable_link_map_converter_for_channel(
         )
 
     # Make sure the channel exists
-    converter = await link_map_converter_dao.get_(session, pk=converter_id)
+    converter = await link_map_converter_dao.select_by_id(session, pk=converter_id)
 
     if converter is None:
         raise HTTPException(

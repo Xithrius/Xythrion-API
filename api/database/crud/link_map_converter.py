@@ -38,8 +38,8 @@ class LinkMapConverterCRUD(CRUDBase[LinkMapConverterModel, LinkMapConverterCreat
 
         return items.scalars().all()
 
-    async def create(self, db: AsyncSession, *, obj_in: LinkMapConverterCreate) -> LinkMapConverterModel:
-        return await self.create_(db, obj_in=obj_in)
+    async def create(self, db: AsyncSession, *, obj: LinkMapConverterCreate) -> LinkMapConverterModel:
+        return await self.create_(db, obj=obj)
 
     async def remove_children(self, db: AsyncSession, *, pk: str) -> LinkMapConverterModel | None:
         item = await db.get(self.model, pk)
@@ -58,7 +58,7 @@ class LinkMapConverterCRUD(CRUDBase[LinkMapConverterModel, LinkMapConverterCreat
             if converter is None:
                 return 0
 
-        return await self.delete_(db, pk=pk)
+        return await self.delete_by_id(db, pk=pk)
 
 
 link_map_converter_dao = LinkMapConverterCRUD(LinkMapConverterModel)

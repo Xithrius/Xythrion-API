@@ -40,7 +40,7 @@ async def create_pin(
             detail="Pin already exists",
         )
 
-    return await pin_dao.create(session, obj_in=new_pin)
+    return await pin_dao.create(session, obj=new_pin)
 
 
 @router.delete(
