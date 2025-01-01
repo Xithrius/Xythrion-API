@@ -1,46 +1,30 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-  hooks:
-  - id: check-case-conflict
-  - id: check-merge-conflict
-  - id: check-toml
-  - id: check-yaml
-  - id: check-json
-  - id: trailing-whitespace
-    args: [--markdown-linebreak-ext=md]
-  - id: mixed-line-ending
-    args: [--fix=lf]
-  - id: end-of-file-fixer
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
 
-- repo: https://github.com/pre-commit/pygrep-hooks
-  rev: v1.10.0
-  hooks:
-  - id: python-check-blanket-noqa
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --
+        language: rust
+        types: [rust]
 
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
-  hooks:
-  - id: check-ast
-  - id: trailing-whitespace
-  - id: check-toml
-  - id: end-of-file-fixer
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
 
-- repo: https://github.com/asottile/add-trailing-comma
-  rev: v3.1.0
-  hooks:
-  - id: add-trailing-comma
-
-- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
-  hooks:
-  - id: pretty-format-yaml
-    args:
-    - --autofix
-    - --preserve-quotes
-    - --indent=2
-
-- repo: https://github.com/asottile/pyupgrade
-  rev: v3.19.1
-  hooks:
-  - id: pyupgrade
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ""
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
