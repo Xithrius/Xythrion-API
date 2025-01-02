@@ -25,6 +25,8 @@ sqlx = { version = "0.8.2", features = [
     "json",
 ] }
 dotenvy = "0.15.7"
+serde = "1.0.217"
+toml = "0.8.19"
 
 [profile.dev]
 lto = "off"

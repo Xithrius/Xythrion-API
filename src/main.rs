@@ -6,35 +6,34 @@ mod config;
 mod cors;
 mod database;
 mod routers;
+mod state;
 
-use actix_web::{middleware::Logger, App, HttpServer};
+use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 
+use config::Config;
 use cors::default_cors;
+use state::State;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenvy::dotenv().ok();
     tracing_subscriber::fmt::init();
 
-    let host = "127.0.0.1";
-    let port = 8080;
+    let config = Config::new("config.toml".to_string());
+    let state = State::new(config.clone()).await;
 
-    database::connection::check_for_migrations()
-        .await
-        .expect("An error occurred while running migrations.");
+    let bind_address = config.bind_address();
 
-    let pool = database::connection::connect()
-        .await
-        .expect("Database connection failed");
-
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
             .wrap(default_cors())
+            .app_data(Data::new(config.clone()))
+            .app_data(Data::new(state.clone()))
             .configure(routers::config)
     })
     .workers(2)
-    .bind((host, port))
+    .bind(bind_address)
     .expect("Failed to start Actix web service")
     .run()
     .await

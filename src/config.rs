@@ -1,3 +1,9 @@
+use std::fs::read_to_string;
+
+use serde::{Deserialize, Serialize};
+use tracing::warn;
+
+#[derive(Deserialize, Serialize, Clone)]
 pub struct Config {
     host: String,
     port: usize,
@@ -5,12 +11,12 @@ pub struct Config {
 
     environment: String,
 
-    db_host: String,
-    db_port: usize,
-    db_user: String,
-    db_pass: String,
-    db_base: String,
-    db_echo: bool,
+    pub db_host: String,
+    pub db_port: u16,
+    pub db_user: String,
+    pub db_pass: String,
+    pub db_base: String,
+    // db_echo: bool,
 }
 
 impl Default for Config {
@@ -25,16 +31,38 @@ impl Default for Config {
             db_user: "xythrion".to_string(),
             db_pass: "xythrion".to_string(),
             db_base: "xythrion".to_string(),
-            db_echo: false,
+            // db_echo: false,
         }
     }
 }
 
 impl Config {
-    fn db_url(&self) -> String {
+    pub fn new(config_path: String) -> Self {
+        read_to_string(config_path).map_or_else(
+            |_| {
+                warn!("Could not find config, opting for default config");
+                Self::default()
+            },
+            |file_content| match toml::from_str(&file_content) {
+                Ok(c) => c,
+                Err(err) => {
+                    warn!("Error when parsing config: {err}");
+                    warn!("Opting for default config");
+
+                    Self::default()
+                }
+            },
+        )
+    }
+
+    pub fn bind_address(&self) -> String {
+        format!("{}:{}", self.host, self.port)
+    }
+
+    pub fn db_url(&self) -> String {
         format!(
-            "postgresql://{}:{}@{}:{}/{}",
-            self.db_host, self.db_port, self.db_user, self.db_pass, self.db_base
+            "postgresql://{}:{}?dbname={}&user={}&password={}",
+            self.db_host, self.db_port, self.db_base, self.db_user, self.db_pass,
         )
     }
 }
