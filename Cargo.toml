@@ -5,7 +5,7 @@ authors = ["Xithrius <xithrius@gmail.com>"]
 homepage = "https://github.com/Xithrius/xythrion-api"
 license = "MIT OR Apache-2.0"
 
-version = "0.0.1"
+version = "0.1.0"
 edition = "2021"
 rust-version = "1.75.0"
 
@@ -23,10 +23,14 @@ sqlx = { version = "0.8.2", features = [
     "migrate",
     "rust_decimal",
     "json",
+    "uuid",
 ] }
 dotenvy = "0.15.7"
 serde = "1.0.217"
 toml = "0.8.19"
+chrono = { version = "0.4.39", features = ["serde"] }
+uuid = { version = "1.11.0", features = ["v4", "fast-rng", "serde"] }
+thiserror = "2.0.9"
 
 [profile.dev]
 lto = "off"

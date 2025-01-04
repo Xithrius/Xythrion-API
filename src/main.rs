@@ -1,11 +1,15 @@
 #![forbid(unsafe_code)]
 #![warn(clippy::nursery, clippy::pedantic)]
-#![allow(clippy::module_name_repetitions)]
+#![allow(
+    clippy::module_name_repetitions,
+    clippy::missing_errors_doc,
+    clippy::missing_panics_doc
+)]
 
-mod config;
-mod cors;
-mod database;
-mod routers;
+pub mod config;
+pub mod cors;
+pub mod database;
+pub mod routers;
 
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 

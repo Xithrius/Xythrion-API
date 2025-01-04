@@ -37,6 +37,7 @@ impl Default for Config {
 }
 
 impl Config {
+    #[must_use]
     pub fn new(config_path: String) -> Self {
         read_to_string(config_path).map_or_else(
             |_| {
@@ -55,10 +56,12 @@ impl Config {
         )
     }
 
+    #[must_use]
     pub fn bind_address(&self) -> String {
         format!("{}:{}", self.host, self.port)
     }
 
+    #[must_use]
     pub fn db_url(&self) -> String {
         format!(
             "postgresql://{}:{}?dbname={}&user={}&password={}",
