@@ -1,7 +1,16 @@
 use sqlx::{migrate::MigrateDatabase, postgres::PgPool, Connection, PgConnection, Postgres};
 use tracing::info;
 
-pub async fn connect(database_url: &str) -> PgPool {
+pub async fn init_database(database_url: String) -> sqlx::Pool<sqlx::Postgres> {
+    info!("Connecting to Postgres database");
+
+    check_for_migrations(&database_url)
+        .await
+        .expect("Something went wrong when running database migrations");
+    connect(&database_url).await
+}
+
+async fn connect(database_url: &str) -> PgPool {
     info!("Initializing database connection");
 
     PgPool::connect(database_url)
@@ -9,7 +18,7 @@ pub async fn connect(database_url: &str) -> PgPool {
         .expect("Could not connect to postgres database")
 }
 
-pub async fn check_for_migrations(database_url: &str) -> Result<(), sqlx::Error> {
+async fn check_for_migrations(database_url: &str) -> Result<(), sqlx::Error> {
     if !Postgres::database_exists(database_url).await.unwrap() {
         info!("Creating database...");
         Postgres::create_database(database_url).await.unwrap();

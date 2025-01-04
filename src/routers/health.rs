@@ -1,6 +1,5 @@
 use actix_web::{get, web, HttpResponse};
-
-use crate::state::State;
+use sqlx::PgPool;
 
 #[get("")]
 async fn internal_health() -> HttpResponse {
@@ -8,8 +7,8 @@ async fn internal_health() -> HttpResponse {
 }
 
 #[get("/database")]
-async fn database_health(state: web::Data<State>) -> HttpResponse {
-    let result = sqlx::query!("SELECT version()").fetch_one(&state.db).await;
+async fn database_health(pool: web::Data<PgPool>) -> HttpResponse {
+    let result = sqlx::query!("SELECT version()").fetch_one(&**pool).await;
 
     if let Err(err) = result {
         return HttpResponse::InternalServerError().body(format!("Database is unhealthy: {err}"));

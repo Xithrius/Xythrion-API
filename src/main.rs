@@ -6,13 +6,12 @@ mod config;
 mod cors;
 mod database;
 mod routers;
-mod state;
 
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 
 use config::Config;
 use cors::default_cors;
-use state::State;
+use database::connection::init_database;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -20,7 +19,8 @@ async fn main() -> std::io::Result<()> {
     tracing_subscriber::fmt::init();
 
     let config = Config::new("config.toml".to_string());
-    let state = State::new(config.clone()).await;
+
+    let database_pool = init_database(config.db_url()).await;
 
     let bind_address = config.bind_address();
 
@@ -29,7 +29,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .wrap(default_cors())
             .app_data(Data::new(config.clone()))
-            .app_data(Data::new(state.clone()))
+            .app_data(Data::new(database_pool.clone()))
             .configure(routers::config)
     })
     .workers(2)
