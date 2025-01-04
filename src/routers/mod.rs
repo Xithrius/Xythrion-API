@@ -1,4 +1,5 @@
 mod health;
+mod link_map;
 mod not_found;
 mod trusted;
 
