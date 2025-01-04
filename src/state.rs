@@ -4,7 +4,7 @@ use crate::{config::Config, database};
 
 #[derive(Clone)]
 pub struct State {
-    db: sqlx::Pool<sqlx::Postgres>,
+    pub db: sqlx::Pool<sqlx::Postgres>,
 }
 
 impl State {
