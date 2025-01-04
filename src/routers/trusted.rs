@@ -32,7 +32,7 @@ async fn get_trusted_user(
 #[post("/")]
 async fn create_trusted_user(
     pool: web::Data<PgPool>,
-    new_trusted_user: web::Path<TrustedUserItem>,
+    new_trusted_user: web::Json<TrustedUserItem>,
 ) -> Result<HttpResponse, ApiError> {
     let user = TrustedModel::get_one(&**pool, new_trusted_user.user_id).await?;
 

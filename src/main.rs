@@ -2,6 +2,7 @@
 #![warn(clippy::nursery, clippy::pedantic)]
 #![allow(
     clippy::module_name_repetitions,
+    clippy::struct_field_names,
     clippy::missing_errors_doc,
     clippy::missing_panics_doc
 )]
