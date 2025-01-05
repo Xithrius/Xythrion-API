@@ -3,22 +3,16 @@ use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::routers::ApiError;
+use crate::{
+    database::models::link_map_model::{DestinationType, LinkMapModel},
+    routers::ApiError,
+};
 
-#[get("/channels/all")]
-async fn get_all_link_map_channels(pool: web::Data<PgPool>) -> Result<HttpResponse, ApiError> {
-    // channels = await link_map_channel_dao.get_all(session)
-    // return list(channels)
-    todo!()
-    // -> list[LinkMapChannelModel]:
-}
-
-#[get("/converters/all")]
+#[get("/converters")]
 async fn get_all_link_map_converters(pool: web::Data<PgPool>) -> Result<HttpResponse, ApiError> {
-    // converters = await link_map_converter_dao.get_all(session)
-    // return list(converters)
-    todo!()
-    // -> list[LinkMapConverterModel]
+    let converters = LinkMapModel::get_all_converters(&**pool).await?;
+
+    Ok(HttpResponse::Ok().json(converters))
 }
 
 #[get("/channels/{channel_id}")]
@@ -26,15 +20,9 @@ async fn get_one_link_map_channel(
     pool: web::Data<PgPool>,
     channel_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, ApiError> {
-    // channel = await link_map_channel_dao.select_by_id(session, pk=channel_id)
-    // if channel is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map channel with ID '{channel_id}' could not be found",
-    //     )
-    // return channel
-    todo!()
-    // -> LinkMapChannelModel
+    let channel = LinkMapModel::get_one_channel(&**pool, *channel_id).await?;
+
+    Ok(HttpResponse::Ok().json(channel))
 }
 
 #[get("/converters/{converter_id}")]
@@ -42,15 +30,9 @@ async fn get_one_link_map_converter(
     pool: web::Data<PgPool>,
     converter_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, ApiError> {
-    // converter = await link_map_converter_dao.select_by_id(session, pk=converter_id)
-    // if converter is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map converter with ID '{converter_id}' could not be found",
-    //     )
-    // return converter
-    todo!()
-    // -> LinkMapConverterModel
+    let converter = LinkMapModel::get_one_converter(&**pool, *converter_id).await?;
+
+    Ok(HttpResponse::Ok().json(converter))
 }
 
 #[get("/server/{discord_server_id}/channels")]
@@ -58,12 +40,9 @@ async fn get_server_link_map_channels(
     pool: web::Data<PgPool>,
     discord_server_id: web::Path<i64>,
 ) -> Result<HttpResponse, ApiError> {
-    // channels = await link_map_channel_dao.get_by_server_id(
-    //     session, server_id=discord_server_id
-    // )
-    // return list(channels)
-    todo!()
-    // -> list[LinkMapChannelModel]
+    let channels = LinkMapModel::get_all_channels(&**pool, *discord_server_id).await?;
+
+    Ok(HttpResponse::Ok().json(channels))
 }
 
 #[get("/server/{discord_server_id}/converters")]
@@ -71,31 +50,9 @@ async fn get_server_link_map_converters(
     pool: web::Data<PgPool>,
     discord_server_id: web::Path<i64>,
 ) -> Result<HttpResponse, ApiError> {
-    // converters = await link_map_converter_dao.get_by_server_id(
-    //     session, server_id=discord_server_id
-    // )
-    // return list(converters)
-    todo!()
-    // -> list[LinkMapConverterModel]
-}
+    let converters = LinkMapModel::get_server_converters(&**pool, *discord_server_id).await?;
 
-#[get("/channels/{discord_channel_id}/converters")]
-async fn get_discord_channel_converters(
-    pool: web::Data<PgPool>,
-    discord_server_id: web::Path<i64>,
-) -> Result<HttpResponse, ApiError> {
-    // items = await link_map_channel_dao.get_converters_for_channel(
-    //     session,
-    //     input_channel_id=discord_channel_id,
-    // )
-    // if (converters := items) is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"No link map converters for discord channel with ID {discord_channel_id} could be found",
-    //     )
-    // return converters
-    todo!()
-    // -> list[LinkMapConverterModel]
+    Ok(HttpResponse::Ok().json(converters))
 }
 
 #[derive(Deserialize, Serialize, Clone)]
@@ -110,18 +67,15 @@ async fn create_link_map_channel(
     pool: web::Data<PgPool>,
     link_map_channel: web::Json<LinkMapChannelCreate>,
 ) -> Result<HttpResponse, ApiError> {
-    // channels = await link_map_channel_dao.get_by_server_id(
-    //     session,
-    //     server_id=link_map_channel.server_id,
-    // )
-    // if channels:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_409_CONFLICT,
-    //         detail=f"Link map channel already exists in server with ID '{link_map_channel.server_id}'",
-    //     )
-    // return await link_map_channel_dao.create(session, obj=link_map_channel)
-    todo!()
-    // -> LinkMapChannelModel
+    LinkMapModel::insert_channel(
+        &**pool,
+        link_map_channel.server_id,
+        link_map_channel.input_channel_id,
+        link_map_channel.output_channel_id,
+    )
+    .await?;
+
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[derive(Deserialize, Serialize, Clone, Default)]
@@ -136,22 +90,28 @@ async fn create_link_map_converter(
     pool: web::Data<PgPool>,
     link_map_converter: web::Json<LinkMapConverterCreate>,
 ) -> Result<HttpResponse, ApiError> {
-    // if (link_map_converter.to_link is None) == (link_map_converter.xpath is None):
-    //     raise HTTPException(
-    //         status_code=status.HTTP_400_BAD_REQUEST,
-    //         detail="Only populate `to_link` or `xpath`.",
-    //     )
-    // converter = await link_map_converter_dao.get_by_link(
-    //     session, link_map=link_map_converter
-    // )
-    // if converter is not None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_409_CONFLICT,
-    //         detail="Link map converter already exists",
-    //     )
-    // return await link_map_converter_dao.create(session, obj=link_map_converter)
-    todo!()
-    // -> LinkMapConverterModel
+    let (to_link, xpath) = (
+        link_map_converter.to_link.clone(),
+        link_map_converter.xpath.clone(),
+    );
+    if (to_link.is_some() && xpath.is_some()) || (to_link.is_none() && xpath.is_none()) {
+        return Err(ApiError::InvalidInput(
+            "The destination for the converter can only be a link XOR an xpath".to_string(),
+        ));
+    }
+
+    LinkMapModel::insert_converter(
+        &**pool,
+        link_map_converter.from_link.clone(),
+        match (to_link, xpath) {
+            (Some(to), None) => DestinationType::Link(to),
+            (None, Some(x)) => DestinationType::XPath(x),
+            _ => panic!("Already checked to link XOR xpath, this branch should never be reached"),
+        },
+    )
+    .await?;
+
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[put("/channels/{channel_id}/converters/{converter_id}/enable")]
@@ -160,34 +120,9 @@ async fn enable_link_map_converter_for_channel(
     channel_id: web::Path<Uuid>,
     converter_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, ApiError> {
-    // # Make sure the converter exists
-    // channel = await link_map_channel_dao.select_by_id(session, pk=channel_id)
-    // if channel is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map channel with ID '{channel_id}' could not be found",
-    //     )
-    // # Make sure the channel exists
-    // converter = await link_map_converter_dao.select_by_id(session, pk=converter_id)
-    // if converter is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map converter with ID '{converter_id}' could not be found",
-    //     )
-    // # Add the converter to the channel
-    // modified_converter_id = await link_map_channel_dao.add_converter(
-    //     session,
-    //     channel_id=channel_id,
-    //     converter_id=converter_id,
-    // )
-    // if modified_converter_id is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_409_CONFLICT,
-    //         detail=f"Link map channel '{channel_id}' already has converter '{converter_id}' enabled",
-    //     )
-    // return Response(status_code=status.HTTP_204_NO_CONTENT)
-    todo!()
-    // -> Response
+    LinkMapModel::enable_converter_for_channel(&**pool, *channel_id, *converter_id).await?;
+
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[put("/channels/{channel_id}/converters/{converter_id}/disable")]
@@ -196,29 +131,9 @@ async fn disable_link_map_converter_for_channel(
     channel_id: web::Path<Uuid>,
     converter_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, ApiError> {
-    // # Make sure the converter exists
-    // channel = await link_map_channel_dao.select_by_id(session, pk=channel_id)
-    // if channel is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map channel with ID '{channel_id}' could not be found",
-    //     )
-    // # Make sure the channel exists
-    // converter = await link_map_converter_dao.select_by_id(session, pk=converter_id)
-    // if converter is None:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map converter with ID '{converter_id}' could not be found",
-    //     )
-    // # Remove the converter from the channel
-    // await link_map_channel_dao.remove_converter(
-    //     session,
-    //     channel_id=channel_id,
-    //     converter_id=converter_id,
-    // )
-    // return Response(status_code=status.HTTP_204_NO_CONTENT)
-    todo!()
-    // -> Response
+    LinkMapModel::disable_converter_for_channel(&**pool, *channel_id, *converter_id).await?;
+
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[delete("/channels/{channel_id}")]
@@ -226,15 +141,9 @@ async fn remove_link_map_channel(
     pool: web::Data<PgPool>,
     channel_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, ApiError> {
-    // count = await link_map_channel_dao.delete(session, pk=channel_id, cascade_once=True)
-    // if count == 0:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map channel with ID '{channel_id}' does not exist.",
-    //     )
-    // return Response(status_code=status.HTTP_204_NO_CONTENT)
-    todo!()
-    // -> Response
+    LinkMapModel::remove_channel(&**pool, *channel_id).await?;
+
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[delete("/converters/{converter_id}")]
@@ -242,15 +151,7 @@ async fn remove_link_map_converter(
     pool: web::Data<PgPool>,
     converter_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, ApiError> {
-    // count = await link_map_converter_dao.delete(
-    //     session, pk=converter_id, cascade_once=True
-    // )
-    // if count == 0:
-    //     raise HTTPException(
-    //         status_code=status.HTTP_404_NOT_FOUND,
-    //         detail=f"Link map converter with ID '{converter_id}' does not exist.",
-    //     )
-    // return Response(status_code=status.HTTP_204_NO_CONTENT)
-    todo!()
-    // -> Response
+    LinkMapModel::remove_converter(&**pool, *converter_id).await?;
+
+    Ok(HttpResponse::NoContent().finish())
 }

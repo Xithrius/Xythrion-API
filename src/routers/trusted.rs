@@ -45,7 +45,7 @@ async fn create_trusted_user(
 
     TrustedModel::insert(&**pool, new_trusted_user.user_id).await?;
 
-    Ok(HttpResponse::NoContent().into())
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[delete("/{user_id}")]
@@ -63,7 +63,7 @@ async fn remove_trusted_user(
 
     TrustedModel::remove(&**pool, *user_id).await?;
 
-    Ok(HttpResponse::NoContent().into())
+    Ok(HttpResponse::NoContent().finish())
 }
 
 pub fn config(cfg: &mut web::ServiceConfig) {
