@@ -8,9 +8,13 @@ use actix_web::{http::StatusCode, web};
 use crate::database::DatabaseError;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
-    cfg.configure(health::config)
-        .configure(trusted::config)
-        .default_service(web::get().to(not_found::not_found));
+    cfg.service(
+        web::scope("/api")
+            .configure(health::config)
+            .configure(link_map::config)
+            .configure(trusted::config),
+    )
+    .default_service(web::get().to(not_found::not_found));
 }
 
 #[derive(thiserror::Error, Debug)]

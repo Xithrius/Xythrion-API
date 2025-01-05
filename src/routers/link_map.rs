@@ -8,7 +8,14 @@ use crate::{
     routers::ApiError,
 };
 
-#[get("/converters")]
+#[get("/channels/all")]
+async fn get_all_link_map_channels(pool: web::Data<PgPool>) -> Result<HttpResponse, ApiError> {
+    let converters = LinkMapModel::get_all_channels(&**pool).await?;
+
+    Ok(HttpResponse::Ok().json(converters))
+}
+
+#[get("/converters/all")]
 async fn get_all_link_map_converters(pool: web::Data<PgPool>) -> Result<HttpResponse, ApiError> {
     let converters = LinkMapModel::get_all_converters(&**pool).await?;
 
@@ -40,7 +47,7 @@ async fn get_server_link_map_channels(
     pool: web::Data<PgPool>,
     discord_server_id: web::Path<i64>,
 ) -> Result<HttpResponse, ApiError> {
-    let channels = LinkMapModel::get_all_channels(&**pool, *discord_server_id).await?;
+    let channels = LinkMapModel::get_server_channels(&**pool, *discord_server_id).await?;
 
     Ok(HttpResponse::Ok().json(channels))
 }
@@ -154,4 +161,22 @@ async fn remove_link_map_converter(
     LinkMapModel::remove_converter(&**pool, *converter_id).await?;
 
     Ok(HttpResponse::NoContent().finish())
+}
+
+pub fn config(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::scope("/link_maps")
+            .service(get_all_link_map_channels)
+            .service(get_all_link_map_converters)
+            .service(get_one_link_map_channel)
+            .service(get_one_link_map_converter)
+            .service(get_server_link_map_channels)
+            .service(get_server_link_map_converters)
+            .service(create_link_map_channel)
+            .service(create_link_map_converter)
+            .service(enable_link_map_converter_for_channel)
+            .service(disable_link_map_converter_for_channel)
+            .service(remove_link_map_channel)
+            .service(remove_link_map_converter),
+    );
 }

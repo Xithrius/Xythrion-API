@@ -103,33 +103,27 @@ impl LinkMapModel {
         Ok(())
     }
 
-    pub async fn get_all_channels<'a, E>(
-        exec: E,
-        server_id: i64,
-    ) -> Result<Vec<LinkMapChannel>, DatabaseError>
+    pub async fn get_all_channels<'a, E>(exec: E) -> Result<Vec<LinkMapChannel>, DatabaseError>
     where
         E: sqlx::Executor<'a, Database = sqlx::Postgres>,
     {
-        let channels = sqlx::query!(
-            "SELECT * FROM link_map_channels WHERE server_id = $1",
-            server_id
-        )
-        .fetch_all(exec)
-        .await?
-        .into_iter()
-        .map(|row| LinkMapChannel {
-            id: row.id,
-            created_at: row.created_at,
-            // TODO: These shouldn't be optionals?
-            server_id: row.server_id.expect("Server ID should be available"),
-            input_channel_id: row
-                .input_channel_id
-                .expect("Input channel should be available"),
-            output_channel_id: row
-                .output_channel_id
-                .expect("Output channel should be available"),
-        })
-        .collect::<Vec<LinkMapChannel>>();
+        let channels = sqlx::query!("SELECT * FROM link_map_channels",)
+            .fetch_all(exec)
+            .await?
+            .into_iter()
+            .map(|row| LinkMapChannel {
+                id: row.id,
+                created_at: row.created_at,
+                // TODO: These shouldn't be optionals?
+                server_id: row.server_id.expect("Server ID should be available"),
+                input_channel_id: row
+                    .input_channel_id
+                    .expect("Input channel should be available"),
+                output_channel_id: row
+                    .output_channel_id
+                    .expect("Output channel should be available"),
+            })
+            .collect::<Vec<LinkMapChannel>>();
 
         Ok(channels)
     }
@@ -202,6 +196,36 @@ impl LinkMapModel {
         });
 
         Ok(converter)
+    }
+
+    pub async fn get_server_channels<'a, E>(
+        exec: E,
+        server_id: i64,
+    ) -> Result<Vec<LinkMapChannel>, DatabaseError>
+    where
+        E: sqlx::Executor<'a, Database = sqlx::Postgres>,
+    {
+        let server_channels = sqlx::query!(
+            "SELECT * FROM link_map_channels WHERE server_id = $1",
+            server_id
+        )
+        .fetch_all(exec)
+        .await?
+        .into_iter()
+        .map(|row| LinkMapChannel {
+            id: row.id,
+            created_at: row.created_at,
+            server_id,
+            input_channel_id: row
+                .input_channel_id
+                .expect("Input channel could not be found"),
+            output_channel_id: row
+                .output_channel_id
+                .expect("Output channel could not be found"),
+        })
+        .collect::<Vec<LinkMapChannel>>();
+
+        Ok(server_channels)
     }
 
     pub async fn get_server_converters<'a, E>(
