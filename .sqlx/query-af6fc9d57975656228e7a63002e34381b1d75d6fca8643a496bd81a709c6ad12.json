@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM link_map_converters WHERE id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "from_link",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "to_link",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "xpath",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "af6fc9d57975656228e7a63002e34381b1d75d6fca8643a496bd81a709c6ad12"
+}

@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO link_map_channels (server_id, input_channel_id, output_channel_id)\n            VALUES ($1, $2, $3)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "0da9486bf5dfcfe9faae61c06e39bdc5ff6ac7e35901ed60c861b9e7746568ad"
+}
