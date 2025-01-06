@@ -42,7 +42,7 @@ async fn get_one_link_map_converter(
     Ok(HttpResponse::Ok().json(converter))
 }
 
-#[get("/server/{discord_server_id}/channels")]
+#[get("/servers/{discord_server_id}/channels")]
 async fn get_server_link_map_channels(
     pool: web::Data<PgPool>,
     discord_server_id: web::Path<i64>,
@@ -52,7 +52,7 @@ async fn get_server_link_map_channels(
     Ok(HttpResponse::Ok().json(channels))
 }
 
-#[get("/server/{discord_server_id}/converters")]
+#[get("/servers/{discord_server_id}/converters")]
 async fn get_server_link_map_converters(
     pool: web::Data<PgPool>,
     discord_server_id: web::Path<i64>,
@@ -124,10 +124,10 @@ async fn create_link_map_converter(
 #[put("/channels/{channel_id}/converters/{converter_id}/enable")]
 async fn enable_link_map_converter_for_channel(
     pool: web::Data<PgPool>,
-    channel_id: web::Path<Uuid>,
-    converter_id: web::Path<Uuid>,
+    path: web::Path<(Uuid, Uuid)>,
 ) -> Result<HttpResponse, ApiError> {
-    LinkMapModel::enable_converter_for_channel(&**pool, *channel_id, *converter_id).await?;
+    let (channel_id, converter_id) = path.into_inner();
+    LinkMapModel::enable_converter_for_channel(&**pool, channel_id, converter_id).await?;
 
     Ok(HttpResponse::NoContent().finish())
 }
@@ -135,10 +135,10 @@ async fn enable_link_map_converter_for_channel(
 #[put("/channels/{channel_id}/converters/{converter_id}/disable")]
 async fn disable_link_map_converter_for_channel(
     pool: web::Data<PgPool>,
-    channel_id: web::Path<Uuid>,
-    converter_id: web::Path<Uuid>,
+    path: web::Path<(Uuid, Uuid)>,
 ) -> Result<HttpResponse, ApiError> {
-    LinkMapModel::disable_converter_for_channel(&**pool, *channel_id, *converter_id).await?;
+    let (channel_id, converter_id) = path.into_inner();
+    LinkMapModel::disable_converter_for_channel(&**pool, channel_id, converter_id).await?;
 
     Ok(HttpResponse::NoContent().finish())
 }
