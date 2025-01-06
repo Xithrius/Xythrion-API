@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM trusted WHERE (user_id = $1)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2aae5aeed8cfddf52f8374148c6fc1519fefc602bfc40fce2b0d20fd75a8f92b"
+}

@@ -1,0 +1,70 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                lc.id AS channel_id,\n                lc.created_at AS channel_created_at,\n                lc.input_channel_id,\n                lc.output_channel_id,\n                c.id AS converter_id,\n                c.created_at AS converter_created_at,\n                c.from_link,\n                c.to_link,\n                c.xpath\n            FROM link_map_channels lc\n            JOIN channel_converter_association cca ON lc.id = cca.channel_id\n            JOIN link_map_converters c ON cca.converter_id = c.id\n            WHERE lc.server_id = $1;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "channel_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "channel_created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 2,
+        "name": "input_channel_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "output_channel_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "converter_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 5,
+        "name": "converter_created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 6,
+        "name": "from_link",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "to_link",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 8,
+        "name": "xpath",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "9685226cae64a4c7efc26e9ae23513aadb704b66fc14048fb2d205cf17268e2f"
+}

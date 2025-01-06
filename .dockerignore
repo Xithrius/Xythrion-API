@@ -1,5 +1,3 @@
-.venv/
-.coverage/
-htmlcov/
-
-coverage.xml
+Dockerfile
+target
+.env

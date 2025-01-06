@@ -1,0 +1,47 @@
+[package]
+name = "xythrion-api"
+description = "API portion of Xythrion"
+authors = ["Xithrius <xithrius@gmail.com>"]
+homepage = "https://github.com/Xithrius/xythrion-api"
+license = "MIT OR Apache-2.0"
+
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75.0"
+
+[dependencies]
+actix-web = "4.9.0"
+actix-cors = "0.7.0"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+tokio = { version = "1.42.0", features = ["rt", "macros", "rt-multi-thread"] }
+sqlx = { version = "0.8.2", features = [
+    "runtime-tokio-rustls",
+    "postgres",
+    "chrono",
+    "macros",
+    "migrate",
+    "rust_decimal",
+    "json",
+    "uuid",
+] }
+dotenvy = "0.15.7"
+serde = "1.0.217"
+toml = "0.8.19"
+chrono = { version = "0.4.39", features = ["serde"] }
+uuid = { version = "1.11.0", features = ["v4", "fast-rng", "serde"] }
+thiserror = "2.0.9"
+
+[[bin]]
+name = "xythrion-api"
+path = "src/main.rs"
+
+[profile.dev]
+lto = "off"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

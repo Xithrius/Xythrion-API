@@ -1,1 +1,1 @@
-# xythrion-api
+# Xythrion API
