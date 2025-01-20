@@ -21,7 +21,7 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            host: "localhost".to_string(),
+            host: "0.0.0.0".to_string(),
             port: 8001,
             worker_count: 2,
             environment: "dev".to_string(),
