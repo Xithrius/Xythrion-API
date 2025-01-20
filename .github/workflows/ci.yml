@@ -9,6 +9,10 @@ env:
   CARGO_TERM_COLOR: always
   SQLX_OFFLINE: true
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-test:
     strategy:
