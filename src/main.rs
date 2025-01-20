@@ -36,9 +36,9 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(prometheus_middleware())
             .wrap(Logger::default())
             .wrap(default_cors())
-            .wrap(prometheus_middleware())
             .app_data(Data::new(config.clone()))
             .app_data(Data::new(database_pool.clone()))
             .configure(routers::config)
