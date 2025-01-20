@@ -11,6 +11,8 @@ RUN cargo build --release
 
 FROM bitnami/minideb:bookworm
 
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /code/target/release/xythrion-api /code/xythrion-api
 COPY --from=builder /code/migrations/* /code/migrations/
 WORKDIR /code
