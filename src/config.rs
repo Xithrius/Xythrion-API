@@ -22,7 +22,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             host: "localhost".to_string(),
-            port: 8080,
+            port: 8001,
             worker_count: 2,
             environment: "dev".to_string(),
             db_host: "localhost".to_string(),

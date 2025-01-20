@@ -17,6 +17,6 @@ COPY --from=builder /code/migrations/* /code/migrations/
 WORKDIR /code
 
 USER 1001
-EXPOSE 8080
+EXPOSE 8001
 
 CMD [ "/code/xythrion-api" ]
