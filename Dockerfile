@@ -1,4 +1,3 @@
-
 FROM rust:1-slim-bookworm AS builder
 WORKDIR /code
 

@@ -25,7 +25,10 @@ async fn main() -> std::io::Result<()> {
 
     let config = Config::new("config.toml".to_string());
 
-    let database_pool = init_database(config.db_url()).await;
+    let database_url =
+        std::env::var("XYTHRION_API_DATABASE_URL").unwrap_or_else(|_| config.db_url());
+
+    let database_pool = init_database(database_url).await;
 
     let bind_address = config.bind_address();
 
