@@ -10,6 +10,7 @@
 pub mod config;
 pub mod cors;
 pub mod database;
+pub mod prometheus;
 pub mod routers;
 
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
@@ -17,6 +18,7 @@ use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 use config::Config;
 use cors::default_cors;
 use database::connection::init_database;
+use prometheus::prometheus_middleware;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -36,6 +38,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Logger::default())
             .wrap(default_cors())
+            .wrap(prometheus_middleware())
             .app_data(Data::new(config.clone()))
             .app_data(Data::new(database_pool.clone()))
             .configure(routers::config)
