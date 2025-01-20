@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-ab -n 1000 -c 10 localhost:8080/health
+ab -n 1000000 -c 100 localhost:8001/api/link_maps/converters/all

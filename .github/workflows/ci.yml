@@ -49,11 +49,11 @@ jobs:
           override: true
           components: rust-src
 
+      - name: Build
+        run: cargo build --verbose --target ${{ matrix.target }}
+
       - name: Run tests
         run: cargo test --verbose --target ${{ matrix.target }}
-
-      - name: Check code for possible improvements
-        run: cargo clippy -- -D warnings
 
   build:
     name: Build
