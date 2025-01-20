@@ -16,7 +16,6 @@ pub struct Config {
     pub db_user: String,
     pub db_pass: String,
     pub db_base: String,
-    // db_echo: bool,
 }
 
 impl Default for Config {
@@ -31,7 +30,6 @@ impl Default for Config {
             db_user: "xythrion".to_string(),
             db_pass: "xythrion".to_string(),
             db_base: "xythrion".to_string(),
-            // db_echo: false,
         }
     }
 }

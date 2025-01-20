@@ -13,7 +13,7 @@ RUN cargo build --release
 FROM bitnami/minideb:bookworm
 
 COPY --from=builder /code/target/release/xythrion-api /code/xythrion-api
-COPY --from=build /code/migrations/* /code/migrations/
+COPY --from=builder /code/migrations/* /code/migrations/
 WORKDIR /code
 
 USER 1001

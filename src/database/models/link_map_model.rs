@@ -114,7 +114,6 @@ impl LinkMapModel {
             .map(|row| LinkMapChannel {
                 id: row.id,
                 created_at: row.created_at,
-                // TODO: These shouldn't be optionals?
                 server_id: row.server_id.expect("Server ID should be available"),
                 input_channel_id: row
                     .input_channel_id
@@ -155,13 +154,12 @@ impl LinkMapModel {
     where
         E: sqlx::Executor<'a, Database = sqlx::Postgres>,
     {
-        let channel = sqlx::query!("SELECT * FROM link_map_channels WHERE id = $1", channel_id,)
+        let channel = sqlx::query!("SELECT * FROM link_map_channels WHERE id = $1", channel_id)
             .fetch_optional(exec)
             .await?
             .map(|row| LinkMapChannel {
                 id: row.id,
                 created_at: row.created_at,
-                // TODO: These shouldn't be optionals?
                 server_id: row.server_id.expect("Server ID should be available"),
                 input_channel_id: row
                     .input_channel_id
@@ -271,7 +269,6 @@ impl LinkMapModel {
                     id: row.channel_id,
                     created_at: row.channel_created_at,
                     server_id,
-                    // TODO: Why are these optionals??
                     input_channel_id: row.input_channel_id.expect("Could not get input channel"),
                     output_channel_id: row.output_channel_id.expect("Could not get output channel"),
                     converters: Vec::new(),
