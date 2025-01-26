@@ -115,12 +115,8 @@ impl LinkMapModel {
                 id: row.id,
                 created_at: row.created_at,
                 server_id: row.server_id.expect("Server ID should be available"),
-                input_channel_id: row
-                    .input_channel_id
-                    .expect("Input channel should be available"),
-                output_channel_id: row
-                    .output_channel_id
-                    .expect("Output channel should be available"),
+                input_channel_id: row.input_channel_id,
+                output_channel_id: row.output_channel_id,
             })
             .collect::<Vec<LinkMapChannel>>();
 
@@ -161,12 +157,8 @@ impl LinkMapModel {
                 id: row.id,
                 created_at: row.created_at,
                 server_id: row.server_id.expect("Server ID should be available"),
-                input_channel_id: row
-                    .input_channel_id
-                    .expect("Input channel should be available"),
-                output_channel_id: row
-                    .output_channel_id
-                    .expect("Output channel should be available"),
+                input_channel_id: row.input_channel_id,
+                output_channel_id: row.output_channel_id,
             });
 
         Ok(channel)
@@ -214,12 +206,8 @@ impl LinkMapModel {
             id: row.id,
             created_at: row.created_at,
             server_id,
-            input_channel_id: row
-                .input_channel_id
-                .expect("Input channel could not be found"),
-            output_channel_id: row
-                .output_channel_id
-                .expect("Output channel could not be found"),
+            input_channel_id: row.input_channel_id,
+            output_channel_id: row.output_channel_id,
         })
         .collect::<Vec<LinkMapChannel>>();
 
@@ -269,8 +257,8 @@ impl LinkMapModel {
                     id: row.channel_id,
                     created_at: row.channel_created_at,
                     server_id,
-                    input_channel_id: row.input_channel_id.expect("Could not get input channel"),
-                    output_channel_id: row.output_channel_id.expect("Could not get output channel"),
+                    input_channel_id: row.input_channel_id,
+                    output_channel_id: row.output_channel_id,
                     converters: Vec::new(),
                 })
                 .converters
