@@ -1,0 +1,8 @@
+ALTER TABLE link_map_channels
+  ALTER COLUMN created_at SET DATA TYPE TIMESTAMPTZ;
+
+ALTER TABLE link_map_converters
+  ALTER COLUMN created_at SET DATA TYPE TIMESTAMPTZ;
+
+ALTER TABLE trusted
+  ALTER COLUMN created_at SET DATA TYPE TIMESTAMPTZ;

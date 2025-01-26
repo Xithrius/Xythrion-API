@@ -11,22 +11,22 @@
       {
         "ordinal": 1,
         "name": "created_at",
-        "type_info": "Timestamp"
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 2,
         "name": "from_link",
-        "type_info": "Varchar"
+        "type_info": "Text"
       },
       {
         "ordinal": 3,
         "name": "to_link",
-        "type_info": "Varchar"
+        "type_info": "Text"
       },
       {
         "ordinal": 4,
         "name": "xpath",
-        "type_info": "Varchar"
+        "type_info": "Text"
       }
     ],
     "parameters": {

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use chrono::NaiveDateTime;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -9,7 +9,7 @@ use crate::database::DatabaseError;
 #[derive(Deserialize, Serialize, Clone, Default)]
 pub struct LinkMapChannel {
     id: Uuid,
-    created_at: NaiveDateTime,
+    created_at: DateTime<Utc>,
     server_id: i64,
     input_channel_id: i64,
     output_channel_id: i64,
@@ -18,7 +18,7 @@ pub struct LinkMapChannel {
 #[derive(Deserialize, Serialize, Clone, Default)]
 pub struct LinkMapConverter {
     id: Uuid,
-    created_at: NaiveDateTime,
+    created_at: DateTime<Utc>,
     from_link: String,
     to_link: Option<String>,
     xpath: Option<String>,
@@ -27,7 +27,7 @@ pub struct LinkMapConverter {
 #[derive(Deserialize, Serialize, Clone, Default)]
 pub struct LinkMapServer {
     id: Uuid,
-    created_at: NaiveDateTime,
+    created_at: DateTime<Utc>,
     server_id: i64,
     input_channel_id: i64,
     output_channel_id: i64,
@@ -114,7 +114,7 @@ impl LinkMapModel {
             .map(|row| LinkMapChannel {
                 id: row.id,
                 created_at: row.created_at,
-                server_id: row.server_id.expect("Server ID should be available"),
+                server_id: row.server_id,
                 input_channel_id: row.input_channel_id,
                 output_channel_id: row.output_channel_id,
             })
@@ -156,7 +156,7 @@ impl LinkMapModel {
             .map(|row| LinkMapChannel {
                 id: row.id,
                 created_at: row.created_at,
-                server_id: row.server_id.expect("Server ID should be available"),
+                server_id: row.server_id,
                 input_channel_id: row.input_channel_id,
                 output_channel_id: row.output_channel_id,
             });

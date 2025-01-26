@@ -11,7 +11,7 @@
       {
         "ordinal": 1,
         "name": "channel_created_at",
-        "type_info": "Timestamp"
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 2,
@@ -31,22 +31,22 @@
       {
         "ordinal": 5,
         "name": "converter_created_at",
-        "type_info": "Timestamp"
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 6,
         "name": "from_link",
-        "type_info": "Varchar"
+        "type_info": "Text"
       },
       {
         "ordinal": 7,
         "name": "to_link",
-        "type_info": "Varchar"
+        "type_info": "Text"
       },
       {
         "ordinal": 8,
         "name": "xpath",
-        "type_info": "Varchar"
+        "type_info": "Text"
       }
     ],
     "parameters": {
